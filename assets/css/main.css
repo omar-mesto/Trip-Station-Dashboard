@@ -1,0 +1,19 @@
+@import "tailwindcss";
+@import "tailwindcss" theme(static);
+@import "@nuxt/ui-pro";
+
+@theme static {
+    --font-sans: 'Public Sans', sans-serif;
+
+    --breakpoint-3xl: 1920px;
+
+    --color-primary: #1E3A8A; 
+    --color-Sequand: #F8A26D;
+    --color-background: #D9D9D9;
+
+    --color-secondary: #F8A26D;
+}
+
+input {
+    color: black !important;
+}
