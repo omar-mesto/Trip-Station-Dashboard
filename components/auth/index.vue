@@ -24,7 +24,6 @@ const formIsValid = computed(() => {
 })
 
 const form = ref()
-const errorStore = useErrorStore()
 const toast = useToast()
 const isLoading = ref(false)
 
@@ -39,7 +38,7 @@ const loginUser = async () => {
     globalStore.accessToken = result.accessToken
     toast.add({ description: `Login Successful`, color: 'success' })
   } else {
-    toast.add({ description: `${errorStore.message}`, color: 'error' })
+    toast.add({ description: `Incorrect Email or Password`, color: 'error' })
   }
   isLoading.value = false
   userForm.value.email = ''
