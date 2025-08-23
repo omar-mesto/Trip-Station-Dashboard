@@ -6,6 +6,7 @@ export const useGlobalStore = defineStore('globalStore', () => {
     const fullName = ref('')
     const email = ref('')
     const role = ref<string>()
+    const image = ref('')
 
     const logout = () => {
         accessToken.value = ''
@@ -13,10 +14,10 @@ export const useGlobalStore = defineStore('globalStore', () => {
         useRouter().push({ path: '/admin/auth' })
     }
 
-    return { role, accessToken, fullName, email, logout }
+    return { role, image, accessToken, fullName, email, logout }
 }, {
     persist: {
-        pick: ['accessToken', 'role', 'fullName', 'email'],
+        pick: ['accessToken', 'image', 'role', 'fullName', 'email'],
     },
 
 })
