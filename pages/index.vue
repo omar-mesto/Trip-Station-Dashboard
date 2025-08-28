@@ -2,6 +2,7 @@
 import { useOverView } from '@@/queries/dashbaord/overView'
 import type { overViewModel } from '~/models/overViewModel'
 
+const router = useRouter()
 const { data: overView, refresh: refreshOverView } = useOverView()
 onMounted(() => refreshOverView())
 const overViewData = computed(() => overView.value as overViewModel | undefined)
@@ -24,6 +25,7 @@ const overViewData = computed(() => overView.value as overViewModel | undefined)
           <UCard
             v-if="overViewData?.data"
             class="shadow-2xl hover:cursor-pointer hover:bg-[#0007660f]"
+            @click="router.push('/users')"
           >
             <p class="text-lg text-gray-600 flex items-center">
               <UButton class="py-3 px-3">
@@ -56,6 +58,7 @@ const overViewData = computed(() => overView.value as overViewModel | undefined)
           <UCard
             v-if="overViewData?.data"
             class="shadow-2xl hover:cursor-pointer hover:bg-[#0007660f]"
+            @click="router.push('/trips')"
           >
             <p class="text-lg text-gray-600 flex items-center">
               <UButton class="py-3 px-3">
@@ -88,6 +91,7 @@ const overViewData = computed(() => overView.value as overViewModel | undefined)
           <UCard
             v-if="overViewData?.data"
             class="shadow-2xl hover:cursor-pointer hover:bg-[#0007660f]"
+            @click="router.push('/countries')"
           >
             <p class="text-lg text-gray-600 flex items-center">
               <UButton class="py-3 px-3">
@@ -117,10 +121,10 @@ const overViewData = computed(() => overView.value as overViewModel | undefined)
             />
           </div>
 
-          <!-- Companies Card -->
           <UCard
             v-if="overViewData?.data"
             class="shadow-2xl hover:cursor-pointer hover:bg-[#0007660f]"
+            @click="router.push('/companies')"
           >
             <p class="text-lg text-gray-600 flex items-center">
               <UButton class="py-3 px-3">
