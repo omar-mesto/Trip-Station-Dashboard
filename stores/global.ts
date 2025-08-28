@@ -11,7 +11,7 @@ export const useGlobalStore = defineStore('globalStore', () => {
     const logout = () => {
         accessToken.value = ''
         role.value = undefined
-        useRouter().push({ path: '/admin/auth' })
+        useRouter().push({ path: '/auth' })
     }
 
     return { role, image, accessToken, fullName, email, logout }

@@ -8,7 +8,7 @@ const items: NavigationMenuItem[] = [
   { label: 'Dashboard', icon: 'i-lucide-home', to: '/' },
   { label: 'Users', icon: 'i-lucide-user', to: '/users' },
   { label: 'Trips', icon: 'i-lucide-map', to: '/trips' },
-  { label: 'Country', icon: 'i-lucide-globe', to: '/country' },
+  { label: 'Country', icon: 'i-lucide-globe', to: '/countries' },
   { label: 'Companies', icon: 'i-lucide-building', to: '/companies' },
 ]
 </script>
