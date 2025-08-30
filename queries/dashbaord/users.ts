@@ -1,8 +1,8 @@
 import { useAPI } from '@@/services/baseApi'
 
-export const useUsers = () => {
+export const useUsers = (page: Ref<number>, limit: Ref<number>) => {
   return useAPI({
-    url: () => `/admin/users?page=1&limit=50`,
+    url: () => `/admin/users?page=${page.value}&limit=${limit.value}`,
     type: 'GET',
     queryKey: 'Users',
     isLazy: true,

@@ -2,11 +2,13 @@ export interface UsersModel {
   success: boolean;
   message: string;
   data: {
-    total: number;
-    page: number;
-    limit: number;
-    totalPages: number;
     data: User[];
+    pagination: {
+      total: number;
+      page: number;
+      limit: number;
+      totalPages: number;
+    };
   };
 }
 

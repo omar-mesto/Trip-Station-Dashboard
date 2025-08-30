@@ -141,9 +141,15 @@ function getRowItems(row: Row<User>) {
   ]
 }
 
-const { data, refresh: refreshUsers, pending } = useUsers()
+const page = ref(1)
+const limit = ref(2)
+const { data, refresh: refreshUsers, pending } = useUsers(page, limit)
 const users = computed(() => data.value as UsersModel | undefined)
+const pagination = computed(() => users.value?.data.pagination)
 onMounted(() => {
+  refreshUsers()
+})
+watch(page, () => {
   refreshUsers()
 })
 </script>
@@ -162,7 +168,7 @@ onMounted(() => {
 
         <div
           v-if="pending"
-          class="text-center text-primary w-full text-2xl overflow-x-auto"
+          class="text-center text-primary w-full text-2xl overflow-x-auto rounded-lg shadow-xl pb-5 flex-1 flex flex-col min-h-0 min-w-0"
         >
           Loading...
         </div>
@@ -177,9 +183,15 @@ onMounted(() => {
             sticky
             :columns="columns"
           />
-          <div class="flex justify-end py-2 px-3 border-t">
-            <UPagination />
-          </div>
+        </div>
+        <div class="flex justify-end align-content-end py-2 px-3 border-t">
+          <UPagination
+            v-if="pagination"
+            v-model:page="page"
+            :total="pagination.total"
+            :items-per-page="pagination.limit"
+            @update:page="refreshUsers"
+          />
         </div>
       </div>
     </div>
