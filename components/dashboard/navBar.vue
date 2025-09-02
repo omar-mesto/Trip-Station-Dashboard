@@ -39,9 +39,15 @@ const items = [
       class="bg-primary shadow-sm border-0"
     >
       <template #title>
-        <h1 class="text-xl">
-          Trip Station
-        </h1>
+        <div class="flex px-5">
+          <img
+            class="w-10 h-12"
+            src="/tripStationLogo.png"
+          >
+          <h1 class="text-xl p-3">
+            Trip Station
+          </h1>
+        </div>
       </template>
       <template #right>
         <div class="flex items-center gap-4">
