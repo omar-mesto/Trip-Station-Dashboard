@@ -142,7 +142,7 @@ function getRowItems(row: Row<User>) {
 }
 
 const page = ref(1)
-const limit = ref(2)
+const limit = ref(10)
 const { data, refresh: refreshUsers, pending } = useUsers(page, limit)
 const users = computed(() => data.value as UsersModel | undefined)
 const pagination = computed(() => users.value?.data.pagination)
