@@ -77,9 +77,11 @@ function cancelDelete() {
 }
 
 const toast = useToast()
+const isSaving = ref(false)
 async function confirmDelete() {
   const companyId = selectedCompany.value?.id
   if (!companyId) return
+  isSaving.value = true
   try {
     const { clear } = useDeleteCompany(companyId)
     await clear()
@@ -99,6 +101,7 @@ async function confirmDelete() {
     const message = err instanceof Error ? err.message : 'Failed to delete company'
     toast.add({ title: message, color: 'error' })
   }
+  isSaving.value = false
 }
 
 const UButton = resolveComponent('UButton')
@@ -133,9 +136,14 @@ function getRowItems(row: Row<Company>) {
 const columns: TableColumn<Company>[] = [
   { accessorKey: 'id', header: 'ID', cell: ({ row }) => `${row.getValue('id')}` },
   {
-    accessorKey: 'name',
-    header: 'Name',
-    cell: ({ row }) => `${row.getValue('name')}`,
+    accessorKey: 'name.en',
+    header: 'English Name',
+    cell: ({ row }) => `${row.original.name.en}`,
+  },
+  {
+    accessorKey: 'name.ar',
+    header: 'Arabic Name',
+    cell: ({ row }) => `${row.original.name.ar}`,
   },
   { accessorKey: 'rating', header: 'Rating', cell: ({ row }) => `${row.getValue('rating')}` },
 
@@ -185,6 +193,7 @@ const columns: TableColumn<Company>[] = [
 
 async function saveCompany() {
   if (!selectedCompany.value) return
+  isSaving.value = true
   try {
     const payload = {
       name: selectedCompany.value.name,
@@ -215,6 +224,7 @@ async function saveCompany() {
     const message = err instanceof Error ? err.message : 'Failed to save company'
     toast.add({ title: message, color: 'error' })
   }
+  isSaving.value = false
 }
 </script>
 
@@ -349,6 +359,7 @@ async function saveCompany() {
           </UButton>
           <UButton
             color="primary"
+            :loading="isSaving"
             @click="saveCompany"
           >
             Save Changes
@@ -377,6 +388,7 @@ async function saveCompany() {
           </UButton>
           <UButton
             class="bg-red-600 hover:bg-red-800 text-white"
+            :loading="isSaving"
             @click="confirmDelete"
           >
             Delete

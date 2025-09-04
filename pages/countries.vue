@@ -81,6 +81,7 @@ const toast = useToast()
 async function confirmDelete() {
   const countryId = selectedCountry.value?.id
   if (!countryId) return
+  isSaving.value = true
   try {
     const { clear } = useDeleteCountry(countryId)
     await clear()
@@ -100,6 +101,7 @@ async function confirmDelete() {
     const message = err instanceof Error ? err.message : 'Failed to delete country'
     toast.add({ title: message, color: 'error' })
   }
+  isSaving.value = false
 }
 
 const UButton = resolveComponent('UButton')
@@ -134,9 +136,14 @@ function getRowItems(row: Row<Country>) {
 const columns: TableColumn<Country>[] = [
   { accessorKey: 'id', header: 'ID', cell: ({ row }) => `${row.getValue('id')}` },
   {
-    accessorKey: 'name',
-    header: 'Name',
-    cell: ({ row }) => `${row.getValue('name')}`,
+    accessorKey: 'name.en',
+    header: 'English Name',
+    cell: ({ row }) => `${row.original.name.en}`,
+  },
+  {
+    accessorKey: 'name.ar',
+    header: 'Arabic Name',
+    cell: ({ row }) => `${row.original.name.ar}`,
   },
   { accessorKey: 'tripType', header: 'Trip type', cell: ({ row }) => `${row.getValue('tripType')}` },
   {
@@ -177,8 +184,10 @@ const columns: TableColumn<Country>[] = [
   },
 ]
 
+const isSaving = ref(false)
 async function saveCountry() {
   if (!selectedCountry.value) return
+  isSaving.value = true
   try {
     const formData = new FormData()
     formData.append('name.en', selectedCountry.value.name.en)
@@ -211,6 +220,7 @@ async function saveCountry() {
     const message = err instanceof Error ? err.message : 'Failed to save country'
     toast.add({ title: message, color: 'error' })
   }
+  isSaving.value = false
 }
 
 function onImageUpload(event: Event) {
@@ -365,6 +375,7 @@ const tripTypeItems = ref(['international', 'local'])
           </UButton>
           <UButton
             color="primary"
+            :loading="isSaving"
             @click="saveCountry"
           >
             Save Changes
@@ -387,6 +398,7 @@ const tripTypeItems = ref(['international', 'local'])
             color="gray"
             variant="ghost"
             class="bg-gray-500 text-white"
+            :loading="isSaving"
             @click="cancelDelete"
           >
             Cancel
