@@ -22,7 +22,7 @@ export function useAPI<T>(
     })
 }
 export const api = $fetch.create({
-    baseURL: 'https://trip-station-production.up.railway.app/api',
+    baseURL: 'http://162.0.211.44:5000/api',
     onRequest({ options }) {
         options.headers.set('Accept', 'application/json')
         options.headers.set('Authorization', `Bearer ${useGlobalStore().accessToken}`)

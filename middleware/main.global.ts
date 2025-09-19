@@ -3,20 +3,23 @@ import { RoleName } from '@@/utils/RoleName'
 import { defineNuxtRouteMiddleware, navigateTo } from 'nuxt/app'
 
 export default defineNuxtRouteMiddleware((to) => {
-  const { role, token } = useGlobalStore()
+  const { role, accessToken } = useGlobalStore()
   const toName = to.name?.toString() || ''
 
-  if (role === RoleName.Admin) {
-    if (!token) {
-      if (!toName.startsWith('admin-auth')) {
-        return navigateTo('/admin/auth')
-      }
-      return
+  if (!accessToken) {
+    if (!toName.startsWith('auth')) {
+      return navigateTo('/auth')
     }
 
-    if (toName.startsWith('admin-auth') && to.fullPath !== '/') {
-      return navigateTo('/')
-    }
+    return
+  }
+
+  if (role !== RoleName.Admin) {
+    return navigateTo('/auth')
+  }
+
+  if (toName.startsWith('auth')) {
+    return navigateTo('/')
   }
 
   return true

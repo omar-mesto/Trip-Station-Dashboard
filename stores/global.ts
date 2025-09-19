@@ -1,23 +1,25 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 export const useGlobalStore = defineStore('globalStore', () => {
-    const accessToken = ref('')
-    const fullName = ref('')
-    const email = ref('')
-    const role = ref<string>()
-    const image = ref('')
+  const accessToken = ref('')
+  const fullName = ref('')
+  const email = ref('')
+  const role = ref<string>()
+  const image = ref('')
 
-    const logout = () => {
-        accessToken.value = ''
-        role.value = undefined
-        useRouter().push({ path: '/auth' })
-    }
+  const router = useRouter()
 
-    return { role, image, accessToken, fullName, email, logout }
+  const logout = () => {
+    accessToken.value = ''
+    role.value = undefined
+    router.push('/admin/auth')
+  }
+
+  return { role, image, accessToken, fullName, email, logout }
 }, {
-    persist: {
-        pick: ['accessToken', 'image', 'role', 'fullName', 'email'],
-    },
-
+  persist: {
+    pick: ['accessToken', 'image', 'role', 'fullName', 'email'],
+  },
 })
