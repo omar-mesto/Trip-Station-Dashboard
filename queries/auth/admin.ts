@@ -8,3 +8,11 @@ export const useLoginAdmin = (user: adminModel) => {
 export const useLogout = () => {
   return useAPI({ url: '/auth/logout', queryKey: 'logout', type: 'POST' })
 }
+
+export const useUpdateProfile = () => {
+  return useAPI({
+    url: '/admin/profile',
+    queryKey: 'Profile',
+    type: 'PUT',
+  })
+}

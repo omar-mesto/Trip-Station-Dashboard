@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import type { TableColumn } from '@nuxt/ui'
-import { h } from 'vue'
 import type { Row } from '@tanstack/vue-table'
 import { useCompanies, useCreateCompany, useDeleteCompany, useUpdateCompany } from '@@/queries/dashbaord/company'
 import type { Company, CompaniesResponse } from '~/models/companiesModel'
@@ -276,10 +275,15 @@ async function saveCompany() {
 
     <UModal
       v-model:open="showCompanyModal"
-      :title="isEditMode ? 'Update Company' : 'Add Company'"
       :ui="{ title: 'text-black' }"
+      class="bg-white"
       @after-leave="selectedCompany = null"
     >
+      <template #title>
+        <p class="text-black">
+          {{ isEditMode ? 'Update Company' : 'Add Company' }}
+        </p>
+      </template>
       <template #body>
         <form
           v-if="selectedCompany"
@@ -300,18 +304,6 @@ async function saveCompany() {
                 class="pt-2"
               />
             </div>
-          </div>
-
-          <div>
-            <label class="text-black">Rating</label>
-            <UInput
-              v-model="selectedCompany.rating"
-              type="number"
-              step="0.1"
-              min="0"
-              max="5"
-              class="pt-2"
-            />
           </div>
 
           <div class="grid grid-cols-2 gap-4">
@@ -343,6 +335,17 @@ async function saveCompany() {
                 class="pt-2"
               />
             </div>
+            <div>
+              <label class="text-black px-2">Rating</label>
+              <UInput
+                v-model="selectedCompany.rating"
+                type="number"
+                step="0.1"
+                min="0"
+                max="5"
+                class="pt-2"
+              />
+            </div>
           </div>
         </form>
       </template>
@@ -370,9 +373,14 @@ async function saveCompany() {
 
     <UModal
       v-model:open="openDeleteModal"
-      title="Delete Company"
       :ui="{ footer: 'justify-end' }"
+      class="bg-white"
     >
+      <template #title>
+        <p class="text-black">
+          Delete Company
+        </p>
+      </template>
       <template #body>
         <p>{{ modalMessage }}</p>
       </template>

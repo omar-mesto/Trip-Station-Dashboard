@@ -2,7 +2,6 @@
 import type { TableColumn } from '@nuxt/ui'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import { Navigation, Pagination } from 'swiper/modules'
-import { h } from 'vue'
 import type { Row } from '@tanstack/vue-table'
 import { useCountries, useCreateCountry, useDeleteCountry, useUpdateCountry } from '@@/queries/dashbaord/countries'
 import type { Country, CountriesResponse } from '~/models/countriesModel'
@@ -282,13 +281,18 @@ const tripTypeItems = ref(['international', 'local'])
 
     <UModal
       v-model:open="showImagesModal"
-      title="Country Images"
+      class="bg-white"
       :close="{
         color: 'primary',
         variant: 'outline',
         class: 'rounded-full',
       }"
     >
+      <template #title>
+        <p class="text-black">
+          Country Images
+        </p>
+      </template>
       <template #body>
         <Swiper
           :modules="[Navigation, Pagination]"
@@ -315,6 +319,7 @@ const tripTypeItems = ref(['international', 'local'])
       v-model:open="showCountryModal"
       :title="isEditMode ? 'Update Country' : 'Add Country'"
       :ui="{ title: 'text-black' }"
+      class="bg-white"
       @after-leave="selectedCountry = null"
     >
       <template #body>
@@ -387,6 +392,7 @@ const tripTypeItems = ref(['international', 'local'])
     <UModal
       v-model:open="openDeleteModal"
       title="Delete Country"
+      class="bg-white"
       :ui="{ footer: 'justify-end' }"
     >
       <template #body>

@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import type { TableColumn } from '@nuxt/ui'
-import { h } from 'vue'
 import { useBlockUser, useUsers } from '@@/queries/dashbaord/users'
 import type { User, UsersModel } from '@@/models/userModel'
 import type { Row } from '@tanstack/vue-table'
@@ -198,9 +197,14 @@ watch(page, () => {
 
     <UModal
       v-model:open="openModel"
-      :title="actionType === 'block' ? 'Block User' : 'Unblock User'"
+      class="bg-white"
       :ui="{ footer: 'justify-end' }"
     >
+      <template #title>
+        <p class="text-white">
+          {{ actionType === 'block' ? 'Block User' : 'Unblock User' }}
+        </p>
+      </template>
       <template #body>
         <p>{{ modalMessage }}</p>
       </template>

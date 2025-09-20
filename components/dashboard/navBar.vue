@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
 import { useGlobalStore } from '@@/stores/global'
 import { useLogout } from '@@/queries/auth/admin'
 
@@ -18,12 +17,6 @@ const confirmLogout = async () => {
 }
 
 const items = [
-  {
-    label: 'Profile',
-    onSelect: () => {
-      router.push('auth/updateProfile')
-    },
-  },
   {
     label: 'Logout',
     onSelect: () => {
@@ -55,8 +48,8 @@ const items = [
             :items="items"
             :content="{ align: 'center', side: 'bottom', sideOffset: 8 }"
             :ui="{
-              item: 'cursor-pointer px-3 py-2 hover:bg-gray-100 hover:text-red-500 rounded text-sm',
-              content: 'w-48 text-center',
+              item: 'cursor-pointer px-3 py-2 hover:bg-primary hover:text-red-500 rounded text-sm',
+              content: 'w-48 text-center bg-white text-black',
             }"
           >
             <UButton variant="ghost">
@@ -73,9 +66,14 @@ const items = [
 
     <UModal
       v-model:open="showLogoutConfirm"
-      title="Logout Confirmation"
       :ui="{ footer: 'justify-end' }"
+      class="bg-white text-black"
     >
+      <template #title>
+        <p class="text-black">
+          Logout Confirmation
+        </p>
+      </template>
       <template #body>
         <p>Are you sure you want to log out?</p>
       </template>
@@ -84,12 +82,13 @@ const items = [
         <div class="flex justify-end gap-2">
           <UButton
             variant="ghost"
+            class="hover:cursor-pointer"
             @click="showLogoutConfirm = false"
           >
             Cancel
           </UButton>
           <UButton
-            color="error"
+            class="bg-red-500 hover:bg-red-600 hover:cursor-pointer hover:text-white"
             @click="confirmLogout"
           >
             Logout

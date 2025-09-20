@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { h, nextTick } from 'vue'
 import type { TableColumn } from '@nuxt/ui'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import { Navigation, Pagination } from 'swiper/modules'
@@ -116,7 +115,7 @@ return [
 
 const columns: TableColumn<Trip>[] = [
   { accessorKey: 'id', header: 'ID', cell: ({ row }) => `${row.getValue('id')}` },
-  { accessorKey: 'name.en', header: 'English Name', cell: ({ row }) => `${(row.original.name as any).en ?? ''}` },
+  { accessorKey: 'name.en', header: 'English Name', cell: ({ row }) => `${(row.original.name).en ?? ''}` },
   { accessorKey: 'location', header: 'Location', cell: ({ row }) => `${row.getValue('location')}` },
   { accessorKey: 'price', header: 'Price', cell: ({ row }) => `${row.getValue('price')}` },
   { accessorKey: 'startDate', header: 'Start', cell: ({ row }) => `${row.original.startDate ? new Date(row.original.startDate).toLocaleDateString() : ''}` },
@@ -147,10 +146,10 @@ async function saveTrip() {
   isSaving.value = true
   try {
     const formData = new FormData()
-    formData.append('name.en', (selectedTrip.value.name as any).en ?? '')
-    formData.append('name.ar', (selectedTrip.value.name as any).ar ?? '')
-    formData.append('description.en', (selectedTrip.value.description as any).en ?? '')
-    formData.append('description.ar', (selectedTrip.value.description as any).ar ?? '')
+    formData.append('name.en', (selectedTrip.value.name).en ?? '')
+    formData.append('name.ar', (selectedTrip.value.name).ar ?? '')
+    formData.append('description.en', (selectedTrip.value.description).en ?? '')
+    formData.append('description.ar', (selectedTrip.value.description).en ?? '')
     formData.append('price', String(selectedTrip.value.price ?? 0))
     formData.append('tripType', selectedTrip.value.tripType ?? '')
     formData.append('status', selectedTrip.value.status ?? 'active')
@@ -159,8 +158,8 @@ async function saveTrip() {
     formData.append('endDate', selectedTrip.value.endDate ?? '')
     formData.append('lat', String(selectedTrip.value.lat ?? 0))
     formData.append('lng', String(selectedTrip.value.lng ?? 0))
-    formData.append('isAdvertisement', String(selectedTrip.value.isAdvertisement ?? false))
     formData.append('rating', String(selectedTrip.value.rating ?? 0))
+    formData.append('isAdvertisement', String(selectedTrip.value.isAdvertisement ?? false))
 
     (selectedTrip.value.imageFiles ?? []).forEach((f: File, idx: number) => {
       formData.append('images', f)
@@ -169,11 +168,11 @@ async function saveTrip() {
     if (isEditMode.value && selectedTrip.value.id) {
       const { execute } = useUpdateTrip()
       await execute(selectedTrip.value.id, formData)
-      toast.add({ title: `${(selectedTrip.value.name as any).en} updated successfully`, color: 'success' })
+      toast.add({ title: `${(selectedTrip.value.name).en} updated successfully`, color: 'success' })
     } else {
       const { execute } = useCreateTrip()
       await execute(formData)
-      toast.add({ title: `${(selectedTrip.value.name as any).en} added successfully`, color: 'success' })
+      toast.add({ title: `${(selectedTrip.value.name).en} added successfully`, color: 'success' })
     }
     showTripModal.value = false
     await refresh()
@@ -300,7 +299,7 @@ function closeMapModal() {
     <UModal
       v-model:open="showImagesModal"
       :close="{ color: 'primary', variant: 'outline', class: 'rounded-full' }"
-      class="bg-white text-black"
+      class="bg-white"
     >
       <template #title>
         <h1 class="text-black">
@@ -393,8 +392,13 @@ function closeMapModal() {
 
     <UModal
       v-model:open="showDeleteModal"
-      title="Delete Trip"
+      class="bg-white"
     >
+      <template #title>
+        <p class="text-black">
+          Delete Trip
+        </p>
+      </template>
       <template #body>
         <p>{{ modalMessage }}</p>
       </template>
@@ -424,24 +428,5 @@ function closeMapModal() {
 :deep(thead) {
   background-color: #F8A26D !important;
   box-shadow: 2px 2px black !important;
-}
-
-:deep(.dropdown-menu) {
-  background: white !important;
-  color: black !important;
-}
-
-.custom-pagination :deep(.page-item) {
-  background: white !important;
-  color: #2563eb !important;
-  border: 1px solid #2563eb !important;
-  border-radius: 6px;
-  padding: 4px 8px;
-  margin: 0 2px;
-  cursor: pointer;
-}
-.custom-pagination :deep(.page-item.active) {
-  background: #2563eb !important;
-  color: white !important;
 }
 </style>

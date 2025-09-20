@@ -24,6 +24,9 @@ export function useAPI<T>(
 export const api = $fetch.create({
     baseURL: 'http://162.0.211.44:5000/api',
     onRequest({ options }) {
+        if (!(options.body instanceof FormData)) {
+            options.headers.set('Content-Type', 'application/json')
+        }
         options.headers.set('Accept', 'application/json')
         options.headers.set('Authorization', `Bearer ${useGlobalStore().accessToken}`)
         options.headers.set('role', `${useGlobalStore().role}`)

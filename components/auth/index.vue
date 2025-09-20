@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
-import { useErrorStore } from '@@/stores/error'
 import { useGlobalStore } from '@@/stores/global'
 import { loginSchema } from '~/schema/loginAdmin.schema'
 
