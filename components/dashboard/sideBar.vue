@@ -1,10 +1,11 @@
-<script setup lang="ts">
-import type { NavigationMenuItem } from '@nuxt/ui'
-import { useRoute } from 'vue-router'
+<script lang="ts" setup>
+import { useRouter, useRoute } from 'vue-router'
 
+const router = useRouter()
 const route = useRoute()
+defineProps<{ isOpen: boolean }>()
 
-const items: NavigationMenuItem[] = [
+const navItems = [
   { label: 'Dashboard', icon: 'i-lucide-home', to: '/' },
   { label: 'Users', icon: 'i-lucide-user', to: '/users' },
   { label: 'Trips', icon: 'i-lucide-map', to: '/trips' },
@@ -14,40 +15,30 @@ const items: NavigationMenuItem[] = [
 </script>
 
 <template>
-  <UDashboardSidebar
-    id="default"
-    collapsible
-    resizable
-    :ui="{ body: 'bg-primary overflow-x-hidden' }"
-  >
-    <template #default="{ collapsed }">
-      <UNavigationMenu
-        :collapsed="collapsed"
-        :items="items"
-        orientation="vertical"
-        :ui="{ list: 'space-y-2' }"
-      >
-        <template #item="itemValue">
-          <div class="relative w-full">
-            <div
-              class="flex items-center text-lg gap-3 cursor-pointer transition-all duration-300 px-6 py-4 relative z-10"
-              :class="route.path === itemValue.item.to
-                ? 'text-primary font-semibold'
-                : 'text-white hover:bg-white/10 rounded-l-3xl'"
-            >
-              <Icon
-                :name="itemValue.item.icon"
-                class="text-xl"
-              />
-              <span>{{ itemValue.item.label }}</span>
-            </div>
-            <div
-              v-if="route.path === itemValue.item.to"
-              class="absolute inset-y-0 left-0 right-[-9999px] bg-white rounded-l-3xl"
-            />
-          </div>
-        </template>
-      </UNavigationMenu>
-    </template>
-  </UDashboardSidebar>
+  <aside class="fixed md:static w-64 bg-primary text-white flex flex-col transition-transform duration-300 z-50"
+    :class="{
+      '-translate-x-full': !isOpen,
+      'translate-x-0 w-full h-full': isOpen,
+      'md:w-64 md:h-auto md:translate-x-0': true
+    }">
+    <nav class="flex-1 mt-6 pl-5">
+      <ul class="space-y-2">
+        <li
+          v-for="item in navItems"
+          :key="item.to"
+          :class="route.path === item.to
+            ? 'bg-white text-primary font-semibold rounded-l-3xl'
+            : 'hover:bg-white/10 rounded-l-3xl'"
+          class="flex items-center gap-3 px-6 py-4 cursor-pointer transition"
+          @click="router.push(item.to)"
+        >
+          <Icon
+            :name="item.icon"
+            class="text-xl"
+          />
+          <span>{{ item.label }}</span>
+        </li>
+      </ul>
+    </nav>
+  </aside>
 </template>

@@ -175,20 +175,33 @@ const columns: TableColumn<Company>[] = [
         'div',
         { class: 'text-left' },
         h(
-          UDropdownMenu,
-          { content: { align: 'end' }, items: getRowItems(row) },
-          () =>
-            h(UButton, {
-              icon: 'i-lucide-ellipsis-vertical',
-              color: 'neutral',
-              variant: 'ghost',
-              class: 'ml-auto',
-              'aria-label': 'Actions',
-            }),
-        ),
+  UDropdownMenu,
+  {
+    content: { align: 'end' },
+    items: getRowItems(row),
+    ui: {
+      content: 'bg-white text-black',
+      item: 'text-black cursor-pointer px-3 py-2 hover:bg-gray-100 rounded text-sm',
+    },
+  },
+  () =>
+    h(UButton, {
+      icon: 'i-lucide-ellipsis-vertical',
+      color: 'neutral',
+      variant: 'ghost',
+      class: 'ml-auto',
+      'aria-label': 'Actions',
+    }),
+),
       ),
   },
 ]
+
+const isSidebarOpen = ref(true)
+
+const toggleSidebar = () => {
+  isSidebarOpen.value = !isSidebarOpen.value
+}
 
 async function saveCompany() {
   if (!selectedCompany.value) return
@@ -229,9 +242,9 @@ async function saveCompany() {
 
 <template>
   <UDashboardGroup class="flex bg-[#F5F5F5] flex-col h-screen">
-    <DashboardNavBar />
+    <DashboardNavBar :toggle-sidebar="toggleSidebar" />
     <div class="flex flex-1 min-h-0 min-w-0">
-      <DashboardSideBar />
+      <DashboardSideBar :is-open="isSidebarOpen" />
       <div class="flex-1 p-6 flex flex-col min-h-0 min-w-0">
         <div class="flex justify-between items-center mb-4">
           <h1 class="text-2xl text-secondary font-bold pb-2">
@@ -383,7 +396,9 @@ async function saveCompany() {
         </p>
       </template>
       <template #body>
-        <p>{{ modalMessage }}</p>
+        <p class="text-black">
+          {{ modalMessage }}
+        </p>
       </template>
       <template #footer>
         <div class="flex justify-end gap-2">

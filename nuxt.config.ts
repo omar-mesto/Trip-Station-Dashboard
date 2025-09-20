@@ -4,9 +4,9 @@ export default defineNuxtConfig({
   modules: [
     '@pinia/nuxt',
     '@nuxt/eslint',
-    '@nuxt/ui-pro',
     'pinia-plugin-persistedstate/nuxt',
     'nuxt-swiper',
+    '@nuxt/ui',
   ],
   devtools: { enabled: true },
   css: [

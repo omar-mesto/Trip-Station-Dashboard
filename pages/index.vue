@@ -6,14 +6,20 @@ const router = useRouter()
 const { data: overView, refresh: refreshOverView } = useOverView()
 onMounted(() => refreshOverView())
 const overViewData = computed(() => overView.value as overViewModel | undefined)
+
+const isSidebarOpen = ref(true)
+
+const toggleSidebar = () => {
+  isSidebarOpen.value = !isSidebarOpen.value
+}
 </script>
 
 <template>
   <UDashboardGroup class="flex bg-[#F5F5F5] flex-col h-screen sm:overflow-hidden overflow-auto">
-    <DashboardNavBar />
+    <DashboardNavBar :toggle-sidebar="toggleSidebar"/>
 
     <div class="flex flex-1">
-      <DashboardSideBar />
+      <DashboardSideBar :is-open="isSidebarOpen"/>
       <div class="flex-1 p-6">
         <div class=" flex justify-between items-center mb-4">
           <h1 class="text-4xl text-Sequand font-bold pb-2">

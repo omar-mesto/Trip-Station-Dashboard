@@ -17,6 +17,12 @@ const pagination = computed(() => trips.value?.data.pagination)
 onMounted(() => refresh())
 watch(page, () => refresh())
 
+const isSidebarOpen = ref(true)
+
+const toggleSidebar = () => {
+  isSidebarOpen.value = !isSidebarOpen.value
+}
+
 const companyPage = ref(1)
 const companyLimit = ref(50)
 const { data: companyData } = useCompanies(companyPage, companyLimit)
@@ -172,7 +178,10 @@ const columns: TableColumn<Trip>[] = [
         { class: 'text-left' },
         h(
           UDropdownMenu,
-          { class: { align: 'end' }, items: getRowItems(row) },
+          { class: { align: 'end' }, items: getRowItems(row), ui: {
+      content: 'bg-white text-black',
+      item: 'text-black cursor-pointer px-3 py-2 hover:bg-gray-100 rounded text-sm',
+    } },
           () =>
             h(UButton, {
               icon: 'i-lucide-ellipsis-vertical',
@@ -274,6 +283,7 @@ async function initMap() {
     zoom: 16,
   })
 
+
   marker = new mapboxgl.Marker({ draggable: true })
     .setLngLat([lng, lat])
     .addTo(map)
@@ -306,9 +316,9 @@ function closeMapModal() {
 
 <template>
   <UDashboardGroup class="flex bg-[#F5F5F5] flex-col h-screen">
-    <DashboardNavBar />
+    <DashboardNavBar :toggle-sidebar="toggleSidebar"/>
     <div class="flex flex-1 min-h-0 min-w-0">
-      <DashboardSideBar />
+      <DashboardSideBar :is-open="isSidebarOpen"/>
       <div class="flex-1 p-6 flex flex-col min-h-0 min-w-0">
         <div class="flex justify-between items-center mb-4">
           <h1 class="text-2xl text-secondary font-bold pb-2">
@@ -563,7 +573,6 @@ function closeMapModal() {
             Cancel
           </UButton>
           <UButton
-            color="primary"
             class="text-white hover:cursor-pointer"
             :loading="isSaving"
             @click="saveTrip"
@@ -584,20 +593,21 @@ function closeMapModal() {
         </p>
       </template>
       <template #body>
-        <p>{{ modalMessage }}</p>
+        <p class="text-black">
+          {{ modalMessage }}
+        </p>
       </template>
       <template #footer>
-        <div class="flex justify-end gap-2">
+        <div class="flex justify-end w-full gap-2">
           <UButton
-            color="gray"
-            variant="ghost"
-            :loading="isSaving"
+            class="text-white bg-gray-500 hover:cursor-pointer"
             @click="cancelDelete"
           >
             Cancel
           </UButton>
           <UButton
             class="bg-red-600 text-white"
+            :loading="isSaving"
             @click="confirmDelete"
           >
             Delete
