@@ -9,19 +9,13 @@ export interface Trip {
   images: string[]
   startDate: string
   endDate: string
-  companyName: string | null
+  companyName: { en: string; ar: string } | null
   companyRating: number | null
-  countryName: string | null
+  countryName: { en: string; ar: string } | null
   location: string
   rating: number
-  name: {
-    en: string
-    ar: string
-  }
-  description: {
-    en: string
-    ar: string
-  }
+  name: { en: string; ar: string }
+  description: { en: string; ar: string }
 }
 
 export interface TripsResponse {

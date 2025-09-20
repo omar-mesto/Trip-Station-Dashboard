@@ -264,6 +264,7 @@ const tripTypeItems = ref(['international', 'local'])
             :data="countries.data.data"
             sticky
             :columns="columns"
+            class="text-black"
           />
         </div>
 
@@ -351,6 +352,7 @@ const tripTypeItems = ref(['international', 'local'])
                 v-model="selectedCountry.tripType"
                 :items="tripTypeItems"
                 class="sm:w-48 w-32 pt-2 h-10 border rounded text-black"
+                :ui="{ item: 'text-black hover:bg-black' }"
               />
             </div>
 

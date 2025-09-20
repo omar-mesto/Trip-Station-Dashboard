@@ -257,6 +257,7 @@ async function saveCompany() {
             ref="table"
             :data="companies.data.data"
             sticky
+            class="text-black"
             :columns="columns"
           />
         </div>
@@ -353,7 +354,7 @@ async function saveCompany() {
       <template #footer>
         <div class="flex justify-end w-full gap-5">
           <UButton
-            color="gray"
+            color="primary"
             variant="ghost"
             class="hover:cursor-pointer hover:text-primary"
             @click="showCompanyModal = false"
