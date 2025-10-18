@@ -42,19 +42,19 @@ function openImagesModal(images: string[]) {
 
 const showTripModal = ref(false)
 const isEditMode = ref(false)
-const selectedTrip = ref<Trip & { imageFiles?: File[]; companyId?: string; countryId?: string }>({
-  id: '', price: 0, isAdvertisement: false, lat: 0, lng: 0, tripType: 'international', status: 'active',
+const selectedTrip = ref<Trip & { imageFiles?: File[]; companyId?: string; countryId?: string; availableTime?: { from: string; to: string }; discountedPrice?: number }>({
+  id: '', price: 0, discountedPrice: 0, isAdvertisement: false, lat: 0, lng: 0, tripType: 'international', status: 'active',
   images: [], startDate: '', endDate: '', location: '', rating: 0, name: { en: '', ar: '' },
-  description: { en: '', ar: '' }, companyName: null, companyRating: null, countryName: null, imageFiles: [], companyId: '', countryId: '',
+  description: { en: '', ar: '' }, companyName: null, companyRating: null, countryName: null, imageFiles: [], companyId: '', countryId: '', availableTime: { from: '', to: '' },
 })
 
 function openAddModal() {
-  selectedTrip.value = { id: '', price: 0, isAdvertisement: false, lat: 0, lng: 0, tripType: 'international', status: 'active', images: [], startDate: '', endDate: '', location: '', rating: 0, name: { en: '', ar: '' }, description: { en: '', ar: '' }, companyName: null, companyRating: null, countryName: null, imageFiles: [], companyId: '', countryId: '' }
+  selectedTrip.value = { id: '', price: 0, discountedPrice: 0, isAdvertisement: false, lat: 0, lng: 0, tripType: 'international', status: 'active', images: [], startDate: '', endDate: '', location: '', rating: 0, name: { en: '', ar: '' }, description: { en: '', ar: '' }, companyName: null, companyRating: null, countryName: null, imageFiles: [], companyId: '', countryId: '', availableTime: { from: '', to: '' } }
   isEditMode.value = false
   showTripModal.value = true
 }
 function openUpdateModal(trip: Trip) {
-  selectedTrip.value = { ...trip, name: { en: trip.name.en, ar: trip.name.ar }, description: { en: trip.description.en, ar: trip.description.ar }, imageFiles: [], images: trip.images ?? [], companyId: trip.companyName ?? '', countryId: trip.countryName ?? '' }
+  selectedTrip.value = { ...trip, name: { en: trip.name.en, ar: trip.name.ar }, description: { en: trip.description.en, ar: trip.description.ar }, imageFiles: [], images: trip.images ?? [], companyId: trip.companyName ?? '', countryId: trip.countryName ?? '', availableTime: trip.availableTime ?? { from: '', to: '' }, discountedPrice: trip.discountedPrice ?? 0 }
   isEditMode.value = true
   showTripModal.value = true
 }
@@ -134,6 +134,7 @@ const columns: TableColumn<Trip>[] = [
   },
   { accessorKey: 'location', header: 'Location', cell: ({ row }) => `${row.getValue('location')}` },
   { accessorKey: 'price', header: 'Price', cell: ({ row }) => `${row.getValue('price')}` },
+  { accessorKey: 'discountedPrice', header: 'Discounted Price', cell: ({ row }) => `${row.original.discountedPrice ?? 0}` },
   {
     id: 'date',
     header: 'Date',
@@ -152,7 +153,6 @@ const columns: TableColumn<Trip>[] = [
   { accessorKey: 'rating', header: 'Rating', cell: ({ row }) => `${row.original.rating}` },
   { accessorKey: 'companyName.en', header: 'Company name', cell: ({ row }) => `${row.original.companyName?.en ?? ''}` },
   { accessorKey: 'countryName.en', header: 'Country name', cell: ({ row }) => `${row.original.countryName?.en ?? ''}` },
-
   { accessorKey: 'isAdvertisement', header: () => h('div', { class: 'text-left' }, 'Advertisement'), cell: ({ row }) => `${row.original.isAdvertisement}` },
   {
     accessorKey: 'images',
@@ -199,40 +199,68 @@ async function saveTrip() {
   if (!selectedTrip.value) return
   isSaving.value = true
   try {
-    const formData = new FormData()
-    formData.append('name.en', selectedTrip.value.name.en)
-    formData.append('name.ar', selectedTrip.value.name.ar)
-    formData.append('description.en', selectedTrip.value.description.en)
-    formData.append('description.ar', selectedTrip.value.description.ar)
-    formData.append('price', String(selectedTrip.value.price))
-    formData.append('tripType', selectedTrip.value.tripType)
-    formData.append('status', selectedTrip.value.status)
-    formData.append('location', selectedTrip.value.location)
-    formData.append('startDate', selectedTrip.value.startDate)
-    formData.append('endDate', selectedTrip.value.endDate)
-    formData.append('lat', String(selectedTrip.value.lat))
-    formData.append('lng', String(selectedTrip.value.lng))
-    formData.append('rating', String(selectedTrip.value.rating))
-    formData.append('isAdvertisement', String(selectedTrip.value.isAdvertisement))
+  const formData = new FormData()
+  formData.append('name.en', selectedTrip.value.name.en)
+  formData.append('name.ar', selectedTrip.value.name.ar)
+  formData.append('description.en', selectedTrip.value.description.en)
+  formData.append('description.ar', selectedTrip.value.description.ar)
+  formData.append('price', String(selectedTrip.value.price))
+  formData.append('discountedPrice', String(selectedTrip.value.discountedPrice))
+  formData.append('tripType', selectedTrip.value.tripType)
+  formData.append('status', selectedTrip.value.status)
+  formData.append('location', selectedTrip.value.location)
+  formData.append('startDate', selectedTrip.value.startDate)
+  formData.append('endDate', selectedTrip.value.endDate)
+  formData.append('lat', String(selectedTrip.value.lat))
+  formData.append('lng', String(selectedTrip.value.lng))
+  formData.append('rating', String(selectedTrip.value.rating))
+  formData.append('isAdvertisement', String(selectedTrip.value.isAdvertisement))
+  formData.append('availableTime[from]', selectedTrip.value.availableTime?.from ?? '')
+  formData.append('availableTime[to]', selectedTrip.value.availableTime?.to ?? '')
 
-    if (selectedTrip.value.companyId) formData.append('company', selectedTrip.value.companyId)
-    if (selectedTrip.value.countryId) formData.append('country', selectedTrip.value.countryId)
+  if (selectedTrip.value.companyId)
+    formData.append('company', selectedTrip.value.companyId)
+  if (selectedTrip.value.countryId)
+    formData.append('country', selectedTrip.value.countryId)
 
-    ;(selectedTrip.value.imageFiles ?? []).forEach((f: File) => formData.append('images', f))
+  ;(selectedTrip.value.imageFiles ?? []).forEach((f: File) => formData.append('images', f))
 
-    if (isEditMode.value && selectedTrip.value.id) {
-      await useUpdateTrip(selectedTrip.value.id, formData)
-      toast.add({ title: `${selectedTrip.value.name.en} updated successfully`, color: 'success' })
-    } else {
-      await useCreateTrip(formData)
-      toast.add({ title: `${selectedTrip.value.name.en} added successfully`, color: 'success' })
-    }
+  let response
+  if (isEditMode.value && selectedTrip.value.id) {
+    response = await useUpdateTrip(selectedTrip.value.id, formData)
+  } else {
+    response = await useCreateTrip(formData)
+  }
 
+  const success =
+    (response?.status && response.status === 200) ||
+    (response?.data?.success === true)
+
+  if (success) {
+    toast.add({
+      title: `${selectedTrip.value.name.en} ${isEditMode.value ? 'updated' : 'added'} successfully`,
+      color: 'success',
+    })
     showTripModal.value = false
     await refresh()
-  } catch (err: unknown) {
-    toast.add({ title: err instanceof Error ? err.message : 'Failed to save trip', color: 'error' })
   }
+}
+  catch (error: unknown) {
+  console.error('Trip save error:', error)
+  let errorMessage = 'Failed to save trip'
+  if (error instanceof Error) {
+    errorMessage = error.message
+  } else if (
+    typeof error === 'object' &&
+    error !== null &&
+    'data' in error &&
+    typeof (error as Record<string, unknown>).data === 'object' &&
+    (error as { data?: { message?: string } }).data?.message
+  ) {
+    errorMessage = (error as { data?: { message?: string } }).data?.message ?? errorMessage
+  }
+}
+
   isSaving.value = false
 }
 
@@ -248,6 +276,7 @@ const showMapModal = ref(false)
 let map: mapboxgl.Map | null = null
 let marker: mapboxgl.Marker | null = null
 const config = useRuntimeConfig()
+let geocoder = null
 
 async function openMapModalForTrip(trip: Trip & { lat: number, lng: number }) {
   selectedTrip.value = trip
@@ -260,48 +289,38 @@ async function initMap() {
   const mapboxglModule = await import('mapbox-gl')
   const mapboxgl = mapboxglModule.default ?? mapboxglModule
   mapboxgl.accessToken = config.public.mapboxToken
-
-  if ('disableTelemetry' in mapboxgl && typeof mapboxgl.disableTelemetry === 'function') {
-    mapboxgl.disableTelemetry()
-  }
-
+  if ('disableTelemetry' in mapboxgl && typeof mapboxgl.disableTelemetry === 'function') mapboxgl.disableTelemetry()
   const el = document.getElementById('trip-map')
   if (!el) return
-
   const lng = selectedTrip.value?.lng && selectedTrip.value?.lng !== 0 ? selectedTrip.value.lng : 46.738586
   const lat = selectedTrip.value?.lat && selectedTrip.value?.lat !== 0 ? selectedTrip.value.lat : 24.774265
-
   if (map) {
     map.remove()
     map = null
   }
-
-  map = new mapboxgl.Map({
-    container: el,
-    style: 'mapbox://styles/mapbox/streets-v11',
-    center: [lng, lat],
-    zoom: 16,
-  })
-
-
-  marker = new mapboxgl.Marker({ draggable: true })
-    .setLngLat([lng, lat])
-    .addTo(map)
-
+  map = new mapboxgl.Map({ container: el, style: 'mapbox://styles/mapbox/streets-v11', center: [lng, lat], zoom: 16 })
+  marker = new mapboxgl.Marker({ draggable: true }).setLngLat([lng, lat]).addTo(map)
   map.on('click', e => {
     const lngLat = e.lngLat
     selectedTrip.value!.lng = lngLat.lng
     selectedTrip.value!.lat = lngLat.lat
     marker?.setLngLat(lngLat)
   })
-
   marker.on('dragend', () => {
     if (!marker) return
     const pos = marker.getLngLat()
     selectedTrip.value!.lng = pos.lng
     selectedTrip.value!.lat = pos.lat
   })
-
+  const MapboxGeocoder = (await import('@mapbox/mapbox-gl-geocoder')).default
+  geocoder = new MapboxGeocoder({ accessToken: mapboxgl.accessToken })
+  document.getElementById('geocoder')?.appendChild(geocoder.onAdd(map))
+   setTimeout(() => {
+    const clearButton = document.querySelector('.mapboxgl-ctrl-geocoder--button[aria-label="Clear search"]')
+    if (clearButton) clearButton.innerHTML = ''
+    const loadingIcon = document.querySelector('.mapboxgl-ctrl-geocoder--icon-loading')
+    if (loadingIcon) loadingIcon.innerHTML = ''
+  }, 1000)
   setTimeout(() => map?.resize(), 300)
 }
 
@@ -311,14 +330,15 @@ function closeMapModal() {
     map.remove()
     map = null
     marker = null
-  } }
+  }
+}
 </script>
 
 <template>
   <UDashboardGroup class="flex bg-[#F5F5F5] flex-col h-screen">
-    <DashboardNavBar :toggle-sidebar="toggleSidebar"/>
+    <DashboardNavBar :toggle-sidebar="toggleSidebar" />
     <div class="flex flex-1 min-h-0 min-w-0">
-      <DashboardSideBar :is-open="isSidebarOpen"/>
+      <DashboardSideBar :is-open="isSidebarOpen" />
       <div class="flex-1 p-6 flex flex-col min-h-0 min-w-0">
         <div class="flex justify-between items-center mb-4">
           <h1 class="text-2xl text-secondary font-bold pb-2">
@@ -417,6 +437,10 @@ function closeMapModal() {
       </template>
       <template #body>
         <div
+          id="geocoder"
+          class="mb-3"
+        />
+        <div
           id="trip-map"
           class="w-full h-80 rounded-lg shadow"
         />
@@ -487,7 +511,24 @@ function closeMapModal() {
             placeholder="Price"
             class="border rounded p-2"
           >
-
+          <input
+            v-model.number="selectedTrip.discountedPrice"
+            type="number"
+            placeholder="Discounted Price"
+            class="border rounded p-2"
+          >
+          <input
+            v-model="selectedTrip.availableTime.from"
+            type="time"
+            placeholder="From"
+            class="border rounded p-2"
+          >
+          <input
+            v-model="selectedTrip.availableTime.to"
+            type="time"
+            placeholder="To"
+            class="border rounded p-2"
+          >
           <input
             v-model="selectedTrip.location"
             placeholder="Location"
@@ -620,4 +661,89 @@ function closeMapModal() {
 
 <style scoped>
 :deep(thead) { background-color:#F8A26D !important; box-shadow:2px 2px black !important; }
+:deep(.mapboxgl-ctrl-geocoder) {
+  width: 100% !important;
+  max-width: 400px;
+  margin: 0 auto 1rem auto;
+  font-family: 'Inter', sans-serif;
+  border-radius: 1.5rem !important;
+  background: #fff !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  overflow: visible !important;
+  padding: 0.25rem 0.5rem;
+}
+
+:deep(.mapboxgl-ctrl-geocoder--input) {
+  display: inline-block !important;
+  flex: 1 !important;
+  color: #333 !important;
+  background: transparent !important;
+  border: none !important;
+  padding: 0.75rem 0.5rem !important;
+  font-size: 0.95rem;
+  outline: none;
+}
+
+:deep(.mapboxgl-ctrl-geocoder--icon),
+:deep(.mapboxgl-ctrl-geocoder--button) {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 28px !important;
+  height: 28px !important;
+  color: #F57C00 !important;
+  cursor: pointer;
+}
+
+:deep(.mapboxgl-ctrl-geocoder--button:hover) {
+  color: #E65100 !important;
+}
+
+:deep(.mapboxgl-ctrl-geocoder .mapboxgl-ctrl-geocoder--input-container) {
+  display: flex !important;
+  align-items: center !important;
+  flex-direction: row !important;
+  justify-content: space-between !important;
+}
+
+:deep(.mapboxgl-ctrl-geocoder--pin-right){
+  display: none;
+}
+
+:deep(.suggestions) {
+  background: #fff !important;
+  border-radius: 0.75rem !important;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  margin-top: 0.5rem !important;
+  position: relative !important;
+  z-index: 1000 !important;
+}
+
+:deep(.suggestions li) {
+  padding: 0.5rem 0.75rem !important;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+:deep(.suggestions li:hover) {
+  background-color: #FFF3E0 !important;
+}
+
+:deep(.mapboxgl-ctrl-geocoder--powered-by) {
+  display: flex !important;
+  justify-content: center !important;
+  color: #888 !important;
+  font-size: 0.75rem !important;
+  margin-top: 0.5rem !important;
+}
+
+:deep(.mapboxgl-ctrl-geocoder--button[aria-label="Clear search"]),
+:deep(.mapboxgl-ctrl-geocoder--icon-loading) {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+}
 </style>

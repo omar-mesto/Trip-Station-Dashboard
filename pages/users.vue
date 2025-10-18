@@ -165,9 +165,9 @@ watch(page, () => {
 
 <template>
   <UDashboardGroup class="flex bg-[#F5F5F5] flex-col h-screen">
-    <DashboardNavBar :toggle-sidebar="toggleSidebar"/>
+    <DashboardNavBar :toggle-sidebar="toggleSidebar" />
     <div class="flex flex-1 min-h-0 min-w-0">
-      <DashboardSideBar :is-open="isSidebarOpen"/>
+      <DashboardSideBar :is-open="isSidebarOpen" />
       <div class="flex-1 p-6 flex flex-col min-h-0 min-w-0">
         <div class="flex justify-between items-center mb-4">
           <h1 class="text-2xl text-secondary font-bold pb-2">

@@ -16,6 +16,8 @@ export interface Trip {
   rating: number
   name: { en: string; ar: string }
   description: { en: string; ar: string }
+  availableTime: { from: string, to: string }
+  discountedPrice: number
 }
 
 export interface TripsResponse {

@@ -350,6 +350,13 @@ async function saveCompany() {
               />
             </div>
             <div>
+              <label class="text-black">Map Location</label>
+              <UInput
+                v-model="selectedCompany.contact.mapLocation"
+                class="pt-2"
+              />
+            </div>
+            <div>
               <label class="text-black px-2">Rating</label>
               <UInput
                 v-model="selectedCompany.rating"

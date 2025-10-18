@@ -15,12 +15,14 @@ const navItems = [
 </script>
 
 <template>
-  <aside class="fixed md:static w-64 bg-primary text-white flex flex-col transition-transform duration-300 z-50"
+  <aside
+    class="fixed md:static w-64 bg-primary text-white flex flex-col transition-transform duration-300 z-50"
     :class="{
       '-translate-x-full': !isOpen,
       'translate-x-0 w-full h-full': isOpen,
-      'md:w-64 md:h-auto md:translate-x-0': true
-    }">
+      'md:w-64 md:h-auto md:translate-x-0': true,
+    }"
+  >
     <nav class="flex-1 mt-6 pl-5">
       <ul class="space-y-2">
         <li
