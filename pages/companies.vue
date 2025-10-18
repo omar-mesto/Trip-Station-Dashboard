@@ -248,7 +248,7 @@ async function saveCompany() {
       <div class="flex-1 p-6 flex flex-col min-h-0 min-w-0">
         <div class="flex justify-between items-center mb-4">
           <h1 class="text-2xl text-secondary font-bold pb-2">
-            Companies
+            Companies & Activity
           </h1>
           <UButton @click="openAddModal">
             + Add Company
